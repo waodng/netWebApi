@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "Search";
+}
+<style>
+    .tbform em {
+    color:red; font-weight:bold; font-style:normal;
+    }
+</style>
+    <div style="float: none">
+        <div style="float:left; margin-left:90px;width: 15%" >
+        </div>
+        <div class="tbform" style="float:left;width: 70%; " >
+             <input type="text" style="width:300px" id="keyword" value="@ViewBag.Keyword" /><input type="button" value="搜索" onclick="search()" /> <a href="javascript:history.go(-1);">返回</a> <i>(支持多个关键词空格分隔取交集结果)</i>
+            <br/><br/>
+            @foreach (var c in ViewBag.OpenApisResult as List<ApiView.Code.OpenApi>)
+            {
+                var o = ApiView.Code.DllView.GetOpenApiAttribute(c.Method);
+                if (o != null)
+                {
+                    string info = @"【接口url       】<a href='/?category=$category&id=$apiid'><b>$apiurl</b></a> <b style='color:green'>($category)</b><br/>
+【接口名        】$apiname<br/>
+【接口描述      】$apides<br/>
+【传入描述      】$params<br/>
+【输出描述      】$result<br/>
+【输出状态码描述】$rstate<br/>
+【作者          】$author<br/>
+【版本          】$version<br/>
+【最低兼容版本  】$minversion<br/>
+【备注          】$note<br/>";
+                    var html = info.Replace("$apides", ApiView.Code.StringHelper.HighlightKeyword(o.MethodDescription, ViewBag.Keyword))
+                        .Replace("$params", ApiView.Code.StringHelper.HighlightKeyword(o.ParamDescription, ViewBag.Keyword))
+                        .Replace("$result", ApiView.Code.StringHelper.HighlightKeyword(o.ResultDescription, ViewBag.Keyword))
+                        .Replace("$author", ApiView.Code.StringHelper.HighlightKeyword(o.Author, ViewBag.Keyword))
+                        .Replace("$version", o.Version + "")
+                        .Replace("$minversion", o.MinVersion + "")
+                        .Replace("$note", ApiView.Code.StringHelper.HighlightKeyword(o.Note, ViewBag.Keyword) + "")
+                        .Replace("$apiurl", ApiView.Code.StringHelper.HighlightKeyword(ApiView.Code.Config.appurl + c.RelateUrl() + "", ViewBag.Keyword))
+                        .Replace("$apiname", ApiView.Code.StringHelper.HighlightKeyword(c.ToString(), ViewBag.Keyword))
+                        .Replace("$rstate", ApiView.Code.StringHelper.HighlightKeyword((string.IsNullOrEmpty(o.ResultStateDescription) ? "" : o.ResultStateDescription), ViewBag.Keyword))
+                        .Replace("$category", c.OpenDll.Name)
+                        .Replace("$apiid",c.ID); 
+                    <span style=" font-size:12px">@Html.Raw(html)<br/></span>
+                }
+            }
+        </div>
+    </div>
+     <div style="float: none">
+     </div>
+
+<script type="text/javascript">
+    function search()
+    {
+        window.location = "/home/search/?keyword=" + $('#keyword').val();
+    }
+</script>

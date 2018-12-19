@@ -1,0 +1,4 @@
+D:\svn-working-local\trunk\BaseService\BSF\BSF.BaseService.OpenApi\bin\Release\BSF.BaseService.OpenApi.dll
+D:\svn-working-local\trunk\BaseService\BSF\BSF.BaseService.OpenApi\bin\Release\BSF.BaseService.OpenApi.pdb
+D:\svn-working-local\trunk\BaseService\BSF\BSF.BaseService.OpenApi\obj\Release\BSF.BaseService.OpenApi.dll
+D:\svn-working-local\trunk\BaseService\BSF\BSF.BaseService.OpenApi\obj\Release\BSF.BaseService.OpenApi.pdb

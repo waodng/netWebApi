@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BSF.BaseService.OpenApi</name>
+    </assembly>
+    <members>
+        <member name="T:BSF.BaseService.OpenApi.Attributes.OpenDocAttribute">
+            <summary>
+            开发接口文档描述
+            </summary>
+        </member>
+        <member name="M:BSF.BaseService.OpenApi.Attributes.OpenDocAttribute.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.Double,System.Double,System.String)">
+            <summary>
+            开发接口文档描述
+            </summary>
+            <param name="methodname">接口方法名（简短）</param>
+            <param name="methoddescription">接口方法描述</param>
+            <param name="paramdescription">接口参数描述</param>
+            <param name="resultdescription">返回结果描述</param>
+            <param name="resultstatedescription">返回结果状态码描述</param>
+            <param name="author">作者</param>
+            <param name="version">版本号</param>
+            <param name="minversion">最小版本号（最低兼容版本号） 低于此版本将来会报错</param>
+            <param name="note">其他记录</param>
+        </member>
+        <member name="P:BSF.BaseService.OpenApi.Attributes.OpenDocAttribute.MethodName">
+            <summary>
+            方法名
+            </summary>
+        </member>
+        <member name="P:BSF.BaseService.OpenApi.Attributes.OpenDocAttribute.MethodDescription">
+            <summary>
+            方法描述
+            </summary>
+        </member>
+        <member name="P:BSF.BaseService.OpenApi.Attributes.OpenDocAttribute.ParamDescription">
+            <summary>
+            参数描述
+            </summary>
+        </member>
+        <member name="P:BSF.BaseService.OpenApi.Attributes.OpenDocAttribute.ResultDescription">
+            <summary>
+            结果描述
+            </summary>
+        </member>
+        <member name="P:BSF.BaseService.OpenApi.Attributes.OpenDocAttribute.ResultStateDescription">
+            <summary>
+            结果状态描述
+            </summary>
+        </member>
+        <member name="P:BSF.BaseService.OpenApi.Attributes.OpenDocAttribute.Author">
+            <summary>
+            作者
+            </summary>
+        </member>
+        <member name="P:BSF.BaseService.OpenApi.Attributes.OpenDocAttribute.Version">
+            <summary>
+            版本号
+            </summary>
+        </member>
+        <member name="P:BSF.BaseService.OpenApi.Attributes.OpenDocAttribute.MinVersion">
+            <summary>
+            最低兼容的版本号
+            </summary>
+        </member>
+        <member name="P:BSF.BaseService.OpenApi.Attributes.OpenDocAttribute.Note">
+            <summary>
+            备注
+            </summary>
+        </member>
+    </members>
+</doc>

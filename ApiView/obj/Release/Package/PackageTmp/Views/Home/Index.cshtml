@@ -1,0 +1,335 @@
+﻿@{
+    ViewBag.Title = "";
+    Layout = null;
+}
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <title>OpenApi开发平台</title>
+    <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    <link href="/Content/site.css" rel="stylesheet" />
+
+    <script src="/Scripts/modernizr-2.6.2.js"></script>
+    <script src="/Scripts/jquery-1.8.2.min.js"></script>
+    <script src="/Scripts/jquery.form.js"></script>
+    <script src="~/Scripts/textdiff.js"></script>
+    <style>
+        .new {
+            background-image:url(/Content/images/i-update.png);
+            background-repeat : no-repeat;background-position : 0px 8px;
+            padding-left:5px;
+        }
+    </style>
+</head>
+<body>
+   
+    <div class="header">
+        <div style="float:left; padding-left:10px;"><span style="color:white; font-size:25px; font-weight:bold;">OpenApi开发平台</span></div>
+        <div class="search"><input type="text"id="keyword" /><input type="button" value="搜索" class="ml10 sbtn" onclick="search()" /></div><span class="black">文档更新时间：</span>@ApiView.Code.DllView.lastupdatetime.ToString("yyyy-MM-dd HH:mm:ss")
+   </div>
+    <div class="content">
+        <div class="fl left p10">
+                <select id="selcategory" onchange="choosecategory()">
+                    <option>帮助文档</option>
+                     @foreach (var c in ApiView.Code.DllView.DllPaths())
+                     {
+                        <option @(ViewBag.category == c.Name ? "selected='selected'" : "") value="@c.Name">@c.Name</option>
+                     }
+                </select>
+                @foreach (var c in ApiView.Code.DllView.DllPaths())
+                {
+                    if (ViewBag.category == c.Name)
+                    { 
+                    <div class="tab-title">
+                        <a href="/?category=@ViewBag.category&type=0" class="ctype @(ViewBag.type==0? "current":"")">接口名</a><!--current 为当前状态类名-->
+                        <a href="/?category=@ViewBag.category&type=1" class="ctype @(ViewBag.type==1? "current":"")">接口url</a>
+                    </div>
+                    <li><h2>@c.Name</h2></li>
+                        var cs = ApiView.Code.DllView.AllApis.Where(t => t.OpenDll.Path == c.Path).ToList();
+                        if (cs != null)
+                        {
+                            foreach (var o in cs)
+                            { 
+                    <li @(ApiView.Code.DllView.IfNewVersion(o) ? "class='new'" : "")><a href="/?category=@c.Name&id=@o.ID&type=@ViewBag.type" @(o.ID == ViewBag.id ? "class=current" : "") title="接口:@o.RelateUrl()">
+                        @if (ViewBag.type == 0)
+                        {<span>@o.ToString()</span>}
+                        else
+                        {<span>@o.RelateUrl()</span>}
+                        </a></li>
+                            }
+                        }
+                    }
+                }
+        </div>
+       
+        <div class="tbform right fl ml10 pt10 mt10">
+        @if (ViewBag.id != null)
+        { 
+            <div class="top">
+                @Html.Raw(ViewBag.Description)
+            </div>
+            <form id="apivisit" class="pt10 mt10">
+                <div><label>api服务器地址：</label><input type="text" name="dydapiurl" value="@ViewBag.ApiUrl" /></div>
+                <div class="pt10 mt10">
+                    <input  type="hidden" name="dydapiid"  value="@ViewBag.id"/>
+                    <table width="100%" cellspacing="0" cellspadding="0" border="0">
+                        <tr>
+                            <th>参数名</th>
+                            <th>参数值</th>
+                            <th>参数类型</th>
+                        </tr>
+                        @if (ViewBag.OpenApi != null)
+                        {
+                            if (ApiView.Code.DllView.GetOpenApiAttribute((ViewBag.OpenApi as ApiView.Code.OpenApi).Method).ParamDescription.ToLower().IndexOf("token:") > -1 ||
+                                ApiView.Code.DllView.GetOpenApiAttribute((ViewBag.OpenApi as ApiView.Code.OpenApi).Method).ParamDescription.ToLower().IndexOf("token;") > -1)
+                            { 
+                                <tr>
+                                    <td>token</td>
+                                    <td>
+                                        <input name="token" type="text" value="@(ViewBag.TestData != null && ViewBag.TestData.GetData("token") != "" ? ViewBag.TestData.GetData("token") : "")" /></td>
+                                    <td><i>(传入描述中包含token,则表示必须传入该参数 <a href="http://192.168.17.201:3388/auth/" target="_blank">查看</a>)</i></td>
+                                </tr>
+                            }
+                            @*<tr>
+                                <td>version</td>
+                                <td>
+                                    <input name="version" type="text" value="2.0" /></td>
+                                <td><i>(传入版本号,v1.5版本之前传入为'',v2.0版本传入为2.0)</i></td>
+                            </tr>*@
+                            foreach (var p in ViewBag.OpenApi.Method.GetParameters())
+                            {
+                                    <tr>
+                                        <td>@p.Name</td>
+                                        <td>
+                                            <input name="@p.Name" type="text" value="@(ViewBag.TestData != null && ViewBag.TestData.GetData(p.Name) != "" ? ViewBag.TestData.GetData(p.Name) : "")" /></td>
+                                        <td>(@(p.ParameterType.GetGenericArguments().Length > 0 ? p.ParameterType.GetGenericArguments()[0].Name + "允许null" : p.ParameterType.Name))</td>
+                                    </tr>
+                            }
+                        }
+                    </table>
+                    <div class="mb10 mt10 pt10">
+                        <input type="checkbox" name="dydifsave" value="true"/>
+                        <i>保留本次正确参数至服务器,下次打开自动填充</i>
+                    </div>
+                    <div class="mb10">
+                        <input type="checkbox" id="dydifformatjson" name="dydifformatjson" value="true" onchange="chooseiffromatjson()" @((Session["dydifformatjson"] == "true" || Session["dydifformatjson"]==null) ? "checked='checked'" : "")/>
+                        <i>是否格式化json输出</i></div>
+                    <input type="button" value="模拟提交" onclick="clickapivisit()" />
+                </div>
+
+            </form>
+            <div id="result" style="color: green">
+            </div>
+        }
+        else
+        {
+            <div class="home">
+                                @Html.Raw(@"
+<b>OpenApi开发平台</b> 是为了开放后端开发的Api接口,自动形成文档,方便前端开发与后端开发的api交流,查找及调试等,减少沟通和维护成本。
+作者：车江毅
+
+<b>使用说明文档</b>
+<a href='/doc/DemoController.txt'>DemoController.txt</a>
+<a href='/doc/OpenApi_readme.txt'>OpenApi使用文档说明.txt</a>
+                <div class='pt10'>
+                <b style='color:red'>
+                    <input type='button' style='width:100px;' value='重新获取文档' onclick='reloadsite()' />
+
+                    重新获取文档 按钮会重启网站(并自动从发布的网站中复制dll到文档目录)，难免造成他人短暂无法使用的情况，不要经常使用！！！</b>
+                api 提供的时间格式约定一下：yyyy-MM-dd HH:mm:ss 这种格式，方便手机端调用
+
+                快乐生活,认真工作,生活可以更美好！！！！</div>
+                ".Replace("\n", "<br/>"))
+            </div> 
+        }
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+    var resultdata = "";
+    function clickapivisit() {
+        $('#result').html('Running...');
+        $("#apivisit").ajaxSubmit({
+            type: "post",  //提交方式
+            url: "/Home/Save/", //请求url
+            success: function (data) { //提交成功的回调函数
+                JsonUti.n = "<br />";
+                JsonUti.t = "&nbsp;&nbsp;&nbsp;";
+                //alert(JsonUti.convertToString(data));
+                resultdata = data;
+                //alert(data.result);
+                chooseiffromatjson();
+            }
+        });
+    }
+    function reloadsite() {
+        $.post("/Home/Reload/", { Action: "post", },
+             function (data, textStatus) {
+             }, "json");
+        //window.location = window.location;
+    }
+    function choosecategory() {
+        window.location = "/?category=" + $('#selcategory').val();
+    }
+
+    function chooseiffromatjson() {
+        var data = resultdata; //alert($('#dydifformatjson').attr("checked"));
+        if ($('#dydifformatjson').attr("checked") == true || $('#dydifformatjson').attr("checked") == "checked") {
+            //alert(1);
+            $('#result').html(JsonUti.convertToString(eval("(" + data + ")")));
+        }
+        else {
+            //alert(2);
+            $('#result').html(data);
+        }
+    }
+
+    function search() {
+        window.location = "/home/search/?keyword=" + $('#keyword').val();
+    }
+
+    </script>
+
+
+
+    <script type="text/javascript">
+
+        var JsonUti = {
+            //定义换行符
+            n: "\n",
+            //定义制表符
+            t: "\t",
+            //转换String
+            convertToString: function (obj) {
+                return JsonUti.__writeObj(obj, 1);
+            },
+            //写对象
+            __writeObj: function (obj    //对象
+                    , level             //层次（基数为1）
+                    , isInArray) {       //此对象是否在一个集合内
+                //如果为空，直接输出null
+                if (obj == null) {
+                    return "null";
+                }
+                //为普通类型，直接输出值
+                if (obj.constructor == Number || obj.constructor == Date || obj.constructor == String || obj.constructor == Boolean) {
+                    var v = obj.toString();
+                    var tab = isInArray ? JsonUti.__repeatStr(JsonUti.t, level - 1) : "";
+                    if (obj.constructor == String || obj.constructor == Date) {
+                        //时间格式化只是单纯输出字符串，而不是Date对象
+                        return tab + ("\"" + v + "\"");
+                    }
+                    else if (obj.constructor == Boolean) {
+                        return tab + v.toLowerCase();
+                    }
+                    else {
+                        return tab + (v);
+                    }
+                }
+
+                //写Json对象，缓存字符串
+                var currentObjStrings = [];
+                //遍历属性
+                for (var name in obj) {
+                    var temp = [];
+                    //格式化Tab
+                    var paddingTab = JsonUti.__repeatStr(JsonUti.t, level);
+                    temp.push(paddingTab);
+                    //写出属性名
+                    temp.push("<span style='color:red'>"+name+"</span>" + " : ");
+
+                    var val = obj[name];
+                    if (val == null) {
+                        temp.push("null");
+                    }
+                    else {
+                        var c = val.constructor;
+
+                        if (c == Array) { //如果为集合，循环内部对象
+                            temp.push(JsonUti.n + paddingTab + "[" + JsonUti.n);
+                            var levelUp = level + 2;    //层级+2
+
+                            var tempArrValue = [];      //集合元素相关字符串缓存片段
+                            for (var i = 0; i < val.length; i++) {
+                                //递归写对象                         
+                                tempArrValue.push(JsonUti.__writeObj(val[i], levelUp, true));
+                            }
+
+                            temp.push(tempArrValue.join("," + JsonUti.n));
+                            temp.push(JsonUti.n + paddingTab + "]");
+                        }
+                        else if (c == Function) {
+                            temp.push("[Function]");
+                        }
+                        else {
+                            //递归写对象
+                            temp.push(JsonUti.__writeObj(val, level + 1));
+                        }
+                    }
+                    //加入当前对象“属性”字符串
+                    currentObjStrings.push(temp.join(""));
+                }
+                return (level > 1 && !isInArray ? JsonUti.n : "")                       //如果Json对象是内部，就要换行格式化
+                    + JsonUti.__repeatStr(JsonUti.t, level - 1) + "{" + JsonUti.n     //加层次Tab格式化
+                    + currentObjStrings.join("," + JsonUti.n)                       //串联所有属性值
+                    + JsonUti.n + JsonUti.__repeatStr(JsonUti.t, level - 1) + "}";   //封闭对象
+            },
+            __isArray: function (obj) {
+                if (obj) {
+                    return obj.constructor == Array;
+                }
+                return false;
+            },
+            __repeatStr: function (str, times) {
+                var newStr = [];
+                if (times > 0) {
+                    for (var i = 0; i < times; i++) {
+                        newStr.push(str);
+                    }
+                }
+                return newStr.join("");
+            }
+        };
+
+        //window.onload = function () {
+        //    var json = {
+        //        Id: 1,
+        //        Name: "Test",
+        //        Date: new Date(),
+        //        Subjects:
+        //        [
+        //            {
+        //                Name: "语文"
+        //            },
+        //            {
+        //                Name: "数学"
+        //            },
+        //            {
+        //                Name: "英语",
+        //                Marks: [90, 100, 83, { Test: "aaa" }]
+        //            }
+        //        ],
+        //        Company:
+        //        {
+        //            Name: "Microsoft",
+        //            Location: "USA"
+        //        },
+        //        Test: null
+        //    };
+        //    //-------------测试
+        //    //格式化Json字符串
+        //    //document.getElementById("result").value = JsonUti.convertToString(json);
+
+        //    //网页换行和制表符不一样，设置一下
+        //    //JsonUti.n = "<br />";
+        //    //JsonUti.t = "&nbsp;&nbsp;&nbsp;";
+        //    //document.getElementById("result").innerHTML = JsonUti.convertToString(json);
+        //}
+    </script>
+
+    
+</body>
+</html>
