@@ -1,7 +1,7 @@
 # ApiView #
 
-这个项目是从一个开源的项目apiView中进行的第二次迭代开发的，根据自己webApi需求改写的
-供自己开发学习用，请大家支持原创。。。
+<h1>这个项目是从一个开源的项目apiView中进行的第二次迭代开发的，根据自己webApi需求改写的
+供自己开发学习用，请大家支持原创。。。</h1>
 
 
 net api的接口文档查看网站,用于解决分布式开发过程中的Api接口管理和沟通问题。<br/><br/>
@@ -11,6 +11,7 @@ net api的接口文档查看网站,用于解决分布式开发过程中的Api接
 
 ## 安装包 ##
 使用git下载项目并打开目录 “\安装包\” 可直接安装使用
+
 
 ## 使用Demo示例 ##
 <pre class="brush:c#;toolbar: true; auto-links: false;">
@@ -82,6 +83,5 @@ return Json( new ServiceResult() { code=1, data="测试数据", msg="成功", to
 
 <p><img alt="" height="328" src="http://static.oschina.net/uploads/space/2016/0602/131944_ijJ1_2379842.png" width="500" /></p>
 
-开源QQ群: .net 开源基础服务  **238543768**<br/>
-*随手之作，希望对大家有帮助，如果有兴趣可以继续完善。<br/>*
-by 车江毅<br/>
+
+<br/>
