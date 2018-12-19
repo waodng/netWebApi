@@ -18,3 +18,9 @@ D:\git-working\ApiView\BSF.BaseService.OpenApi\bin\Debug\BSF.BaseService.OpenApi
 D:\git-working\ApiView\BSF.BaseService.OpenApi\obj\Debug\BSF.BaseService.OpenApi.csprojResolveAssemblyReference.cache
 D:\git-working\ApiView\BSF.BaseService.OpenApi\obj\Debug\BSF.BaseService.OpenApi.dll
 D:\git-working\ApiView\BSF.BaseService.OpenApi\obj\Debug\BSF.BaseService.OpenApi.pdb
+E:\Projects\供应室系统webApi\netWebApi\BSF.BaseService.OpenApi\bin\Debug\BSF.BaseService.OpenApi.XML
+E:\Projects\供应室系统webApi\netWebApi\BSF.BaseService.OpenApi\bin\Debug\BSF.BaseService.OpenApi.dll
+E:\Projects\供应室系统webApi\netWebApi\BSF.BaseService.OpenApi\bin\Debug\BSF.BaseService.OpenApi.pdb
+E:\Projects\供应室系统webApi\netWebApi\BSF.BaseService.OpenApi\obj\Debug\BSF.BaseService.OpenApi.dll
+E:\Projects\供应室系统webApi\netWebApi\BSF.BaseService.OpenApi\obj\Debug\BSF.BaseService.OpenApi.pdb
+E:\Projects\供应室系统webApi\netWebApi\BSF.BaseService.OpenApi\obj\Debug\BSF.BaseService.OpenApi.csprojResolveAssemblyReference.cache

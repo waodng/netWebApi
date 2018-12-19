@@ -138,6 +138,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Content Include="App_Data\apiView.mdf" />
+    <Content Include="App_Data\apiView_log.ldf">
+      <DependentUpon>apiView.mdf</DependentUpon>
+    </Content>
     <Content Include="doc\DemoController.txt" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -237,7 +241,6 @@
     <Content Include="Views\Home\Search.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
